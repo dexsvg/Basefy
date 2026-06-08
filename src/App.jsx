@@ -15,7 +15,7 @@ function BasefyApp() {
   
   const [points, setPoints] = useState(() => {
     const savedPoints = localStorage.getItem('basefy_points');
-    return savedPoints ? parseInt(savedPoints, 10) : 0;
+    return savedPoints ? parseInt(savedPoints, 0) : 0;
   });
 
   const [activeTab, setActiveTab] = useState('daily');
@@ -23,13 +23,13 @@ function BasefyApp() {
   const [checkInDays, setCheckInDays] = useState([true, false, false, true, false, false, false]);
 
   const [dailyMissions, setDailyMissions] = useState([
-    { id: 1, title: 'Comment on Basefy Post', points: 3, completed: false, link: 'https://x.com' },
-    { id: 2, title: 'Like on Basefy Post', points: 3, completed: false, link: 'https://x.com' },
+    { id: 1, title: 'Comment on Basefy Post', points: 3, completed: false, link: 'https://x.com/i/status/2064024561658847610' },
+    { id: 2, title: 'Like on Basefy Post', points: 3, completed: false, link: 'https://x.com/i/status/2064024561658847610' },
   ]);
 
   const [generalMissions, setGeneralMissions] = useState([
-    { id: 3, title: 'Follow Basefy on X', points: 10, completed: false, link: 'https://x.com' },
-    { id: 4, title: 'Join Basefy Telegram', points: 15, completed: false, link: 'https://t.me' },
+    { id: 3, title: 'Follow Basefy on X', points: 10, completed: false, link: 'https://x.com/Ai_tesnet' },
+    { id: 4, title: 'Join Basefy Telegram', points: 15, completed: false, link: 'https://t.me/+_Iia7HvRuQQwMjRl' },
   ]);
 
   // LOGIKA REFERRAL 1: Deteksi & beri bonus jika user datang dari link referral orang lain
