@@ -226,5 +226,60 @@ function BasefyApp() {
           <div className="flex flex-col gap-3">
             <h3 className="text-lg font-bold">Daily Mission</h3>
             {dailyMissions.map((mission) => (
-              <div
+              <divkey={mission.id} className="bg-[#242e3d] rounded-xl p-4 flex justify-between items-center border border-gray-700/50">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-black rounded-lg flex items-center justify-center font-bold text-[#0052FF]">𝕏</div>
+                  <div>
+                    <p className="text-xs font-semibold">{mission.title}</p>
+                    <p className="text-[11px] text-gray-500">+{mission.points} p</p>
+                  </div>
+                </div>
+                <button 
+                  disabled={mission.completed}
+                  onClick={() => completeMission(mission.id, 'daily', mission.link, mission.points)}
+                  className={`font-bold text-xs px-4 py-2 rounded-lg transition-colors ${mission.completed ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-[#0052FF] text-white hover:bg-blue-600'}`}
+                >
+                  {mission.completed ? 'DONE' : 'GO'}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* TAB: GENERAL */}
+      {activeTab === 'general' && (
+        <div className="w-full max-w-md flex flex-col gap-3">
+          <h3 className="text-lg font-bold mb-1">General Missions</h3>
+          {generalMissions.map((mission) => (
+            <div key={mission.id} className="bg-[#242e3d] rounded-xl p-4 flex justify-between items-center border border-gray-700/50">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-black rounded-lg flex items-center justify-center font-bold text-blue-400">🌐</div>
+                <div>
+                  <p className="text-xs font-semibold">{mission.title}</p>
+                  <p className="text-[11px] text-gray-500">+{mission.points} p</p>
+                </div>
+              </div>
+              <button 
+                disabled={mission.completed}
+                onClick={() => completeMission(mission.id, 'general', mission.link, mission.points)}
+                className={`font-bold text-xs px-4 py-2 rounded-lg transition-colors ${mission.completed ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-[#0052FF] text-white hover:bg-blue-600'}`}
+              >
+                {mission.completed ? 'DONE' : 'GO'}
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <ThirdwebProvider>
+      <BasefyApp />
+    </ThirdwebProvider>
+  );
+}
               
