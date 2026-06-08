@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createThirdwebClient, getContract, prepareContractCall, toWei } from "thirdweb";
 import { ThirdwebProvider, ConnectButton, TransactionButton, useActiveAccount, MediaRenderer } from "thirdweb/react";
 import { base } from "thirdweb/chains";
-import nftImage from './IMG_20260608_232101'; // Sesuaikan 'nft.png' dengan nama file yang kamu unggah tadi
+import nftImage from './IMG_20260608_232101.png'; // Sesuaikan 'nft.png' dengan nama file yang kamu unggah tadi
 
 
 // 1. Locked Smart Contract Address
