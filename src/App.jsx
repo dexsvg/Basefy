@@ -10,7 +10,7 @@ const client = createThirdwebClient({
 });
 
 function BasefyApp() {
-  const [points, setPoints] = useState(68);
+  const [points, setPoints] = useState(0);
   const [activeTab, setActiveTab] = useState('daily');
   const [checkedIn, setCheckedIn] = useState(false);
   const [checkInDays, setCheckInDays] = useState([true, false, false, true, false, false, false]);
@@ -93,7 +93,7 @@ function BasefyApp() {
           onClick={() => setActiveTab('daily')}
           className={`w-1/2 pb-3 text-sm font-semibold border-b-2 transition-all ${activeTab === 'daily' ? 'border-orange-500 text-white' : 'border-transparent text-gray-400'}`}
         >
-          Daily <span className="bg-orange-500/20 text-orange-400 px-1.5 py-0.5 rounded text-xs ml-1">2</span>
+          Daily <span className="bg-blue-500/20 text-orange-400 px-1.5 py-0.5 rounded text-xs ml-1">2</span>
         </button>
         <button 
           onClick={() => setActiveTab('general')}
