@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
+// Impor modul Thirdweb untuk integrasi Base Chain
+import { createThirdwebClient } from "thirdweb";
+import { ThirdwebProvider, ConnectButton } from "thirdweb/react";
+import { base } from "thirdweb/chains";
 
-export default function App() {
+// Inisialisasi Client Thirdweb (Kamu bisa ganti clientID ini nanti jika punya sendiri)
+const client = createThirdwebClient({
+  clientId: "YOUR_THIRDWEB_CLIENT_ID_OR_TEMPORARY_KEY" 
+});
+
+function BasefyApp() {
   const [points, setPoints] = useState(68);
-  const [activeTab, setActiveTab] = useState('daily'); // 'daily' atau 'general'
+  const [activeTab, setActiveTab] = useState('daily');
   const [checkedIn, setCheckedIn] = useState(false);
   const [checkInDays, setCheckInDays] = useState([true, false, false, true, false, false, false]);
 
-  // Data Misi
   const [dailyMissions, setDailyMissions] = useState([
     { id: 1, title: 'Comment on Basefy Post', points: 3, completed: false, link: 'https://x.com' },
     { id: 2, title: 'Like on Basefy Post', points: 3, completed: false, link: 'https://x.com' },
@@ -17,25 +25,18 @@ export default function App() {
     { id: 4, title: 'Join Basefy Telegram', points: 15, completed: false, link: 'https://t.me' },
   ]);
 
-  // Fungsi Check-in
   const handleCheckIn = () => {
     if (!checkedIn) {
       setCheckedIn(true);
-      setPoints(prev => prev + 10); // Hadiah check-in +10 poin
-      
-      // Ubah sisa slot hari ini (indeks ke-4 misal) menjadi true
+      setPoints(prev => prev + 10);
       const updatedDays = [...checkInDays];
       updatedDays[4] = true; 
       setCheckInDays(updatedDays);
     }
   };
 
-  // Fungsi Selesaikan Misi
   const completeMission = (id, type, link, reward) => {
-    // Buka link tugas di tab baru
     window.open(link, '_blank');
-
-    // Tambah poin dan tandai selesai
     if (type === 'daily') {
       setDailyMissions(dailyMissions.map(m => m.id === id ? { ...m, completed: true } : m));
     } else {
@@ -49,9 +50,24 @@ export default function App() {
       {/* Top Bar */}
       <div className="w-full max-w-md flex justify-between items-center mb-6">
         <span className="text-gray-400 text-sm font-bold tracking-wider">Basefy</span>
-        <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center font-bold text-sm text-black">
-          B
-        </div>
+        
+        {/* Tombol Connect Wallet Otomatis dari Thirdweb */}
+        <ConnectButton
+          client={client}
+          chain={base}
+          theme={"dark"}
+          connectButton={{
+            label: "Connect",
+            style: {
+              backgroundColor: "#f97316",
+              color: "#000000",
+              fontSize: "12px",
+              fontWeight: "bold",
+              borderRadius: "8px",
+              padding: "6px 12px"
+            }
+          }}
+        />
       </div>
 
       {/* Balance Card */}
@@ -87,12 +103,11 @@ export default function App() {
         </button>
       </div>
 
-      {/* RENDER TAB: DAILY */}
+      {/* TAB: DAILY */}
       {activeTab === 'daily' && (
-        <div className="w-full max-w-md app-fade-in">
+        <div className="w-full max-w-md">
           <p className="text-[11px] text-gray-500 mb-4">Daily missions reset by timezone: Asia/Seoul</p>
           
-          {/* Daily Check-in Card */}
           <div className="bg-[#242e3d] rounded-2xl p-4 mb-6 border border-gray-700/50">
             <h3 className="text-base font-bold mb-4">Daily Check-in</h3>
             <div className="flex justify-between mb-5">
@@ -109,7 +124,6 @@ export default function App() {
             </button>
           </div>
 
-          {/* Daily Missions List */}
           <div className="flex flex-col gap-3">
             <h3 className="text-lg font-bold">Daily Mission</h3>
             {dailyMissions.map((mission) => (
@@ -134,7 +148,7 @@ export default function App() {
         </div>
       )}
 
-      {/* RENDER TAB: GENERAL */}
+      {/* TAB: GENERAL */}
       {activeTab === 'general' && (
         <div className="w-full max-w-md flex flex-col gap-3">
           <h3 className="text-lg font-bold mb-1">General Tasks</h3>
@@ -160,5 +174,14 @@ export default function App() {
       )}
     </div>
   );
-                                                                                   }
-            
+}
+
+// Membungkus aplikasi dengan ThirdwebProvider
+export default function App() {
+  return (
+    <ThirdwebProvider>
+      <BasefyApp />
+    </ThirdwebProvider>
+  );
+      }
+                  
