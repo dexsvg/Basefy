@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { createThirdwebClient, getContract, prepareContractCall, toWei } from "thirdweb";
 import { ThirdwebProvider, ConnectButton, TransactionButton, useActiveAccount, MediaRenderer } from "thirdweb/react";
 import { base } from "thirdweb/chains";
+import nftImage from './IMG_20260608_232101'; // Sesuaikan 'nft.png' dengan nama file yang kamu unggah tadi
+
 
 // 1. Locked Smart Contract Address
 const SMART_CONTRACT_ADDRESS = "0x263043098927A76cA8370363F6B815f34E716851"; 
 
 // 2. MASUKKAN LINK GAMBAR NFT KAMU DI SINI (Bisa link biasa atau ipfs://...)
-const NFT_IMAGE_URL = "https://drive.google.com/file/d/1UAqXsGYMsmc9edXwnmdROWlfGzEBEXAR/view?usp=drivesdk";
+const NFT_IMAGE_URL = nftImage;
 
 const client = createThirdwebClient({
   clientId: "YOUR_THIRDWEB_CLIENT_ID_OR_TEMPORARY_KEY" 
