@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { createThirdwebClient, getContract, prepareContractCall } from "thirdweb";
+import { createThirdwebClient, getContract, prepareContractCall, toWei } from "thirdweb";
 import { ThirdwebProvider, ConnectButton, TransactionButton, useActiveAccount, MediaRenderer } from "thirdweb/react";
 import { base } from "thirdweb/chains";
-import { parseEther } from "ethers"; 
 
 // 1. Locked Smart Contract Address
 const SMART_CONTRACT_ADDRESS = "0x263043098927A76cA8370363F6B815f34E716851"; 
@@ -159,7 +158,7 @@ function BasefyApp() {
             <MediaRenderer 
               client={client}
               src={NFT_IMAGE_URL}
-              className="w-full h-full object-cover"
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
           </div>
           
@@ -180,7 +179,7 @@ function BasefyApp() {
                 contract: contract,
                 method: "function claim(address receiver, uint256 quantity)",
                 params: [account?.address || "", 1n],
-                value: parseEther("0.0001"),
+                value: toWei("0.0001"), // Menggunakan toWei bawaan Thirdweb
               })}
               onTransactionConfirmed={() => {
                 alert("Success! NFT Minted.");
@@ -234,4 +233,4 @@ function BasefyApp() {
 }
 
 export default function App() { return ( <ThirdwebProvider> <BasefyApp /> </ThirdwebProvider> ); }
-          
+      
