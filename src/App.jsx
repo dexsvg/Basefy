@@ -23,8 +23,8 @@ function BasefyApp() {
   const [checkInDays, setCheckInDays] = useState([true, false, false, true, false, false, false]);
 
   const [dailyMissions, setDailyMissions] = useState([
-    { id: 1, title: 'Comment on Basefy Post', points: 3, completed: false, link: 'https://x.com/i/status/2064024561658847610' },
-    { id: 2, title: 'Like on Basefy Post', points: 3, completed: false, link: 'https://x.com/i/status/2064024561658847610' },
+    { id: 1, title: 'Comment on Basefy Post', points: 3, completed: false, link: 'https://x.com/Ai_tesnet' },
+    { id: 2, title: 'Like on Basefy Post', points: 3, completed: false, link: 'https://x.com/Ai_tesnet' },
   ]);
 
   const [generalMissions, setGeneralMissions] = useState([
