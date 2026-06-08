@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { createThirdwebClient, getContract, prepareContractCall, toWei } from "thirdweb";
 import { ThirdwebProvider, ConnectButton, TransactionButton, useActiveAccount, MediaRenderer } from "thirdweb/react";
 import { base } from "thirdweb/chains";
-import nftImage from './IMG_20260608_232101.png'; // Sesuaikan 'nft.png' dengan nama file yang kamu unggah tadi
+import nftImage from './IMG_20260608_232101.png'; // Gambar dari repositori GitHub kamu
 
 
 // 1. Locked Smart Contract Address
 const SMART_CONTRACT_ADDRESS = "0x263043098927A76cA8370363F6B815f34E716851"; 
 
-// 2. MASUKKAN LINK GAMBAR NFT KAMU DI SINI (Bisa link biasa atau ipfs://...)
+// 2. Variabel gambar mengarah ke berkas lokal
 const NFT_IMAGE_URL = nftImage;
 
+// Menggunakan Client ID asli milikmu
 const client = createThirdwebClient({
   clientId: "ed3a5c20a7f83fbec44b6820f7e3f264" 
 });
@@ -171,12 +172,13 @@ function BasefyApp() {
                 <p className="text-xs text-gray-400">Exclusive NFT for Basefy members</p>
               </div>
               <div className="text-right">
-                <p className="text-[#0052FF] font-bold text-sm">0.0001 ETH</p>
+                {/* PERUBAHAN TAMPILAN HARGA 1 */}
+                <p className="text-[#0052FF] font-bold text-sm">0.001 ETH</p>
                 <p className="text-[10px] text-gray-500 uppercase font-bold">On Base</p>
               </div>
             </div>
             
-            {/* AMAN: Validasi Tombol Minting Aktif / Pasif */}
+            {/* Validasi Tombol Minting Aktif / Pasif */}
             {!account ? (
               <div className="w-full text-center bg-gray-800 text-gray-400 font-bold py-3 rounded-xl text-sm border border-gray-700">
                 Connect Wallet First to Mint
@@ -186,8 +188,8 @@ function BasefyApp() {
                 transaction={() => prepareContractCall({
                   contract: contract,
                   method: "function claim(address receiver, uint256 quantity)",
-                  params: [account.address, 1n], // Parameter aman & terkunci memakai alamat user yang aktif
-                  value: toWei("0.0001"), 
+                  params: [account.address, 1n], 
+                  value: toWei("0.001"), // PERUBAHAN HARGA KONTRAK ASLI (0.001 ETH)
                 })}
                 onTransactionConfirmed={() => {
                   alert("Success! NFT Minted.");
@@ -200,7 +202,8 @@ function BasefyApp() {
                 className="w-full font-bold py-3 rounded-xl transition-all text-sm"
                 style={{ backgroundColor: "#0052FF", color: "#ffffff", border: "none" }}
               >
-                Mint NFT Now (0.0001 ETH)
+                {/* PERUBAHAN TAMPILAN HARGA DI TOMBOL */}
+                Mint NFT Now (0.001 ETH)
               </TransactionButton>
             )}
           </div>
@@ -246,4 +249,4 @@ function BasefyApp() {
 }
 
 export default function App() { return ( <ThirdwebProvider> <BasefyApp /> </ThirdwebProvider> ); }
-          
+    
