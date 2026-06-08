@@ -12,7 +12,7 @@ const SMART_CONTRACT_ADDRESS = "0x263043098927A76cA8370363F6B815f34E716851";
 const NFT_IMAGE_URL = nftImage;
 
 const client = createThirdwebClient({
-  clientId: "YOUR_THIRDWEB_CLIENT_ID_OR_TEMPORARY_KEY" 
+  clientId: "ed3a5c20a7f83fbec44b6820f7e3f264" 
 });
 
 const contract = getContract({
@@ -176,22 +176,33 @@ function BasefyApp() {
               </div>
             </div>
             
-            <TransactionButton
-              transaction={() => prepareContractCall({
-                contract: contract,
-                method: "function claim(address receiver, uint256 quantity)",
-                params: [account?.address || "", 1n],
-                value: toWei("0.0001"), // Menggunakan toWei bawaan Thirdweb
-              })}
-              onTransactionConfirmed={() => {
-                alert("Success! NFT Minted.");
-                setPoints(prev => prev + 100);
-              }}
-              className="w-full font-bold py-3 rounded-xl transition-all"
-              style={{ backgroundColor: "#0052FF", color: "#ffffff", border: "none" }}
-            >
-              Mint NFT Now
-            </TransactionButton>
+            {/* AMAN: Validasi Tombol Minting Aktif / Pasif */}
+            {!account ? (
+              <div className="w-full text-center bg-gray-800 text-gray-400 font-bold py-3 rounded-xl text-sm border border-gray-700">
+                Connect Wallet First to Mint
+              </div>
+            ) : (
+              <TransactionButton
+                transaction={() => prepareContractCall({
+                  contract: contract,
+                  method: "function claim(address receiver, uint256 quantity)",
+                  params: [account.address, 1n], // Parameter aman & terkunci memakai alamat user yang aktif
+                  value: toWei("0.0001"), 
+                })}
+                onTransactionConfirmed={() => {
+                  alert("Success! NFT Minted.");
+                  setPoints(prev => prev + 100);
+                }}
+                onError={(err) => {
+                  console.error("Mint error details:", err);
+                  alert("Transaction failed. Make sure you have enough ETH on Base Chain.");
+                }}
+                className="w-full font-bold py-3 rounded-xl transition-all text-sm"
+                style={{ backgroundColor: "#0052FF", color: "#ffffff", border: "none" }}
+              >
+                Mint NFT Now (0.0001 ETH)
+              </TransactionButton>
+            )}
           </div>
         </div>
       </div>
@@ -235,4 +246,4 @@ function BasefyApp() {
 }
 
 export default function App() { return ( <ThirdwebProvider> <BasefyApp /> </ThirdwebProvider> ); }
-      
+          
