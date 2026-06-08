@@ -172,7 +172,6 @@ function BasefyApp() {
                 <p className="text-xs text-gray-400">Exclusive NFT for Basefy members</p>
               </div>
               <div className="text-right">
-                {/* PERUBAHAN TAMPILAN HARGA 1 */}
                 <p className="text-[#0052FF] font-bold text-sm">0.001 ETH</p>
                 <p className="text-[10px] text-gray-500 uppercase font-bold">On Base</p>
               </div>
@@ -189,7 +188,7 @@ function BasefyApp() {
                   contract: contract,
                   method: "function claim(address receiver, uint256 quantity)",
                   params: [account.address, 1n], 
-                  value: toWei("0.001"), // PERUBAHAN HARGA KONTRAK ASLI (0.001 ETH)
+                  value: toWei("0.001"), 
                 })}
                 onTransactionConfirmed={() => {
                   alert("Success! NFT Minted.");
@@ -202,7 +201,6 @@ function BasefyApp() {
                 className="w-full font-bold py-3 rounded-xl transition-all text-sm"
                 style={{ backgroundColor: "#0052FF", color: "#ffffff", border: "none" }}
               >
-                {/* PERUBAHAN TAMPILAN HARGA DI TOMBOL */}
                 Mint NFT Now (0.001 ETH)
               </TransactionButton>
             )}
@@ -210,15 +208,16 @@ function BasefyApp() {
         </div>
       </div>
 
-      {/* Tabs */}
+      {/* Tabs Menu */}
       <div className="w-full max-w-md border-b border-gray-700/50 flex mb-4 text-center">
         <button onClick={() => setActiveTab('daily')} className={`w-1/2 pb-3 text-sm font-semibold border-b-2 ${activeTab === 'daily' ? 'border-[#0052FF] text-white' : 'border-transparent text-gray-400'}`}>Daily</button>
         <button onClick={() => setActiveTab('general')} className={`w-1/2 pb-3 text-sm font-semibold border-b-2 ${activeTab === 'general' ? 'border-[#0052FF] text-white' : 'border-transparent text-gray-400'}`}>General</button>
       </div>
 
-      {/* Daily Tab Content */}
-      {activeTab === 'daily' && (
+      {/* Kondisi Konten Berdasarkan Tab yang Aktif */}
+      {activeTab === 'daily' ? (
         <div className="w-full max-w-md">
+          {/* Konten Daily Check-in */}
           <div className="bg-[#242e3d] rounded-2xl p-4 mb-6 border border-gray-700/50">
             <h3 className="text-base font-bold mb-4 text-center">Daily Check-in</h3>
             <div className="flex justify-between mb-5 px-2">
@@ -230,7 +229,8 @@ function BasefyApp() {
               {checkedIn ? 'Already Claimed' : 'Claim Daily +10p'}
             </button>
           </div>
-          {/* Mission List */}
+          
+          {/* Misi Harian (Daily) */}
           <div className="flex flex-col gap-3">
              {dailyMissions.map((m) => (
               <div key={m.id} className="bg-[#242e3d] rounded-xl p-4 flex justify-between items-center border border-gray-700/50">
@@ -243,10 +243,25 @@ function BasefyApp() {
             ))}
           </div>
         </div>
+      ) : (
+        <div className="w-full max-w-md">
+          {/* Misi Umum (General) - Tampil saat tab General aktif */}
+          <div className="flex flex-col gap-3">
+             {generalMissions.map((m) => (
+              <div key={m.id} className="bg-[#242e3d] rounded-xl p-4 flex justify-between items-center border border-gray-700/50">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-black rounded-lg flex items-center justify-center font-bold text-[#0052FF]">𝕏</div>
+                  <div><p className="text-xs font-semibold">{m.title}</p><p className="text-[11px] text-gray-500">+{m.points} p</p></div>
+                </div>
+                <button disabled={m.completed} onClick={() => completeMission(m.id, 'general', m.link, m.points)} className={`font-bold text-xs px-4 py-2 rounded-lg ${m.completed ? 'bg-gray-700 text-gray-500' : 'bg-[#0052FF] text-white'}`}>{m.completed ? 'DONE' : 'GO'}</button>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );
 }
 
 export default function App() { return ( <ThirdwebProvider> <BasefyApp /> </ThirdwebProvider> ); }
-    
+      
