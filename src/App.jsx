@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { createThirdwebClient } from "thirdweb";
-import { ThirdwebProvider, ConnectButton } from "thirdweb/react";
+import { ThirdwebProvider, ConnectButton, useActiveAccount } from "thirdweb/react";
 import { base } from "thirdweb/chains";
 
-// 1. MASUKKAN ALAMAT KONTRAK KAMU DI SINI
+// 1. Put your actual smart contract address here
 const SMART_CONTRACT_ADDRESS = "0x263043098927A76cA8370363F6B815f34E716851"; 
 
 const client = createThirdwebClient({
@@ -11,6 +11,8 @@ const client = createThirdwebClient({
 });
 
 function BasefyApp() {
+  const account = useActiveAccount(); // Detects if a wallet is connected
+  
   const [points, setPoints] = useState(() => {
     const savedPoints = localStorage.getItem('basefy_points');
     return savedPoints ? parseInt(savedPoints, 10) : 0;
@@ -21,14 +23,39 @@ function BasefyApp() {
   const [checkInDays, setCheckInDays] = useState([true, false, false, true, false, false, false]);
 
   const [dailyMissions, setDailyMissions] = useState([
-    { id: 1, title: 'Komentari Postingan Basefy', points: 3, completed: false, link: 'https://x.com' },
-    { id: 2, title: 'Sukai postingan Basefy', points: 3, completed: false, link: 'https://x.com' },
+    { id: 1, title: 'Comment on Basefy Post', points: 3, completed: false, link: 'https://x.com' },
+    { id: 2, title: 'Like on Basefy Post', points: 3, completed: false, link: 'https://x.com' },
   ]);
 
   const [generalMissions, setGeneralMissions] = useState([
-    { id: 3, title: 'Ikuti Basefy di X', points: 10, completed: false, link: 'https://x.com' },
-    { id: 4, title: 'Gabung Telegram Basefy', points: 15, completed: false, link: 'https://t.me' },
+    { id: 3, title: 'Follow Basefy on X', points: 10, completed: false, link: 'https://x.com' },
+    { id: 4, title: 'Join Basefy Telegram', points: 15, completed: false, link: 'https://t.me' },
   ]);
+
+  // Trigger signature request automatically when wallet connects
+  useEffect(() => {
+    const requestSignature = async () => {
+      if (account) {
+        const hasSigned = sessionStorage.getItem(`signed_${account.address}`);
+        if (!hasSigned) {
+          try {
+            // This will pop up a login signature request in user's wallet (OKX, Metamask, etc.)
+            await account.signMessage({
+              message: `Welcome to Basefy!\n\nSign this message to verify your wallet ownership.\n\nWallet: ${account.address}\nContract: ${SMART_CONTRACT_ADDRESS}`
+            });
+            // Mark as signed for this session so it won't spam the user on every refresh
+            sessionStorage.setItem(`signed_${account.address}`, "true");
+            alert("Wallet successfully verified!");
+          } catch (error) {
+            console.error("Signature rejected", error);
+            alert("Signature required to authenticate with Basefy.");
+          }
+        }
+      }
+    };
+
+    requestSignature();
+  }, [account]);
 
   useEffect(() => {
     const lastCheckIn = localStorage.getItem('basefy_last_checkin');
@@ -78,14 +105,14 @@ function BasefyApp() {
     <div className="min-h-screen bg-[#1a222d] text-white font-sans p-4 flex flex-col items-center">
       {/* Top Bar */}
       <div className="w-full max-w-md flex justify-between items-center mb-6">
-        <span className="text-gray-400 text-sm font-bold tracking-wider text-[#0052FF]">Basefy</span>
+        <span className="text-sm font-bold tracking-wider text-[#0052FF]">Basefy</span>
         
         <ConnectButton
           client={client}
           chain={base}
           theme={"dark"}
           connectButton={{
-            label: "Hubungkan",
+            label: "Connect",
             style: {
               backgroundColor: "#0052FF",
               color: "#ffffff",
@@ -105,16 +132,15 @@ function BasefyApp() {
           {points} <span className="text-[#0052FF] text-2xl font-bold">P</span>
         </h1>
         <div className="flex gap-4 text-xs text-[#0052FF] font-medium mb-4">
-          <span className="underline cursor-pointer hover:text-blue-400">Pendapatan</span>
-          <span className="underline cursor-pointer hover:text-blue-400">Pengajuan</span>
-          <span className="underline cursor-pointer hover:text-blue-400">Rujukan</span>
+          <span className="underline cursor-pointer hover:text-blue-400">Earnings</span>
+          <span className="underline cursor-pointer hover:text-blue-400">Submissions</span>
+          <span className="underline cursor-pointer hover:text-blue-400">Referrals</span>
         </div>
 
-        {/* Tampilan Alamat Kontrak di bawah link rujukan (Opsional/Bisa buat info user) */}
         <div className="bg-[#242e3d] rounded-xl p-3 flex flex-col gap-2 border border-gray-700/50">
           <div className="flex justify-between items-center">
             <p className="text-xs text-gray-400 truncate max-w-[80%]">https://basefy.app/start=ref_7022104...</p>
-            <button className="text-gray-400 hover:text-white p-1" onClick={() => alert('Tautan rujukan disalin!')}>📋</button>
+            <button className="text-gray-400 hover:text-white p-1" onClick={() => alert('Referral link copied!')}>📋</button>
           </div>
           <div className="border-t border-gray-700/30 pt-2 flex justify-between items-center">
             <span className="text-[10px] text-gray-500 font-mono">CA: {SMART_CONTRACT_ADDRESS.slice(0,6)}...{SMART_CONTRACT_ADDRESS.slice(-4)}</span>
@@ -129,23 +155,23 @@ function BasefyApp() {
           onClick={() => setActiveTab('daily')}
           className={`w-1/2 pb-3 text-sm font-semibold border-b-2 transition-all ${activeTab === 'daily' ? 'border-[#0052FF] text-white' : 'border-transparent text-gray-400'}`}
         >
-          Harian <span className="bg-[#0052FF]/20 text-[#0052FF] px-1.5 py-0.5 rounded text-xs ml-1">2</span>
+          Daily <span className="bg-[#0052FF]/20 text-[#0052FF] px-1.5 py-0.5 rounded text-xs ml-1">2</span>
         </button>
         <button 
           onClick={() => setActiveTab('general')}
           className={`w-1/2 pb-3 text-sm font-semibold border-b-2 transition-all ${activeTab === 'general' ? 'border-[#0052FF] text-white' : 'border-transparent text-gray-400'}`}
         >
-          Umum <span className="bg-gray-700 text-gray-400 px-1.5 py-0.5 rounded text-xs ml-1">2</span>
+          General <span className="bg-gray-700 text-gray-400 px-1.5 py-0.5 rounded text-xs ml-1">2</span>
         </button>
       </div>
 
-      {/* TAB: HARIAN */}
+      {/* TAB: DAILY */}
       {activeTab === 'daily' && (
         <div className="w-full max-w-md">
-          <p className="text-[11px] text-gray-500 mb-4">Misi harian direset berdasarkan zona waktu: Asia/Seoul</p>
+          <p className="text-[11px] text-gray-500 mb-4">Daily missions reset by timezone: Asia/Seoul</p>
           
           <div className="bg-[#242e3d] rounded-2xl p-4 mb-6 border border-gray-700/50">
-            <h3 className="text-base font-bold mb-4">Check-in Harian</h3>
+            <h3 className="text-base font-bold mb-4">Daily Check-in</h3>
             <div className="flex justify-between mb-5">
               {checkInDays.map((status, index) => (
                 <div key={index} className={`w-7 h-7 rounded-full flex items-center justify-center border text-xs ${status ? 'border-green-500 bg-green-500/10 text-green-500' : 'border-gray-600 text-gray-500'}`}>✓</div>
@@ -156,12 +182,12 @@ function BasefyApp() {
               onClick={handleCheckIn}
               className={`w-full py-3 rounded-xl font-bold text-sm transition-all ${checkedIn ? 'bg-blue-950/40 text-blue-700/50 cursor-not-allowed border border-blue-900/20' : 'bg-[#0052FF] text-white hover:bg-blue-600'}`}
             >
-              {checkedIn ? 'Sudah Check-in Hari Ini (+10p)' : 'Klaim Check-in Harian'}
+              {checkedIn ? 'Checked in for today (+10p)' : 'Claim Daily Check-in'}
             </button>
           </div>
 
           <div className="flex flex-col gap-3">
-            <h3 className="text-lg font-bold">Misi Harian</h3>
+            <h3 className="text-lg font-bold">Daily Mission</h3>
             {dailyMissions.map((mission) => (
               <div key={mission.id} className="bg-[#242e3d] rounded-xl p-4 flex justify-between items-center border border-gray-700/50">
                 <div className="flex items-center gap-3">
@@ -176,7 +202,7 @@ function BasefyApp() {
                   onClick={() => completeMission(mission.id, 'daily', mission.link, mission.points)}
                   className={`font-bold text-xs px-4 py-2 rounded-lg transition-colors ${mission.completed ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-[#0052FF] text-white hover:bg-blue-600'}`}
                 >
-                  {mission.completed ? 'SELESAI' : 'PERGI'}
+                  {mission.completed ? 'DONE' : 'GO'}
                 </button>
               </div>
             ))}
@@ -184,10 +210,10 @@ function BasefyApp() {
         </div>
       )}
 
-      {/* TAB: UMUM */}
+      {/* TAB: GENERAL */}
       {activeTab === 'general' && (
         <div className="w-full max-w-md flex flex-col gap-3">
-          <h3 className="text-lg font-bold mb-1">Misi Umum</h3>
+          <h3 className="text-lg font-bold mb-1">General Missions</h3>
           {generalMissions.map((mission) => (
             <div key={mission.id} className="bg-[#242e3d] rounded-xl p-4 flex justify-between items-center border border-gray-700/50">
               <div className="flex items-center gap-3">
@@ -202,7 +228,7 @@ function BasefyApp() {
                 onClick={() => completeMission(mission.id, 'general', mission.link, mission.points)}
                 className={`font-bold text-xs px-4 py-2 rounded-lg transition-colors ${mission.completed ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-[#0052FF] text-white hover:bg-blue-600'}`}
               >
-                {mission.completed ? 'SELESAI' : 'PERGI'}
+                {mission.completed ? 'DONE' : 'GO'}
               </button>
             </div>
           ))}
@@ -218,4 +244,4 @@ export default function App() {
       <BasefyApp />
     </ThirdwebProvider>
   );
-}
+                                }
