@@ -226,7 +226,7 @@ function BasefyApp() {
           <div className="flex flex-col gap-3">
             <h3 className="text-lg font-bold">Daily Mission</h3>
             {dailyMissions.map((mission) => (
-              <divkey={mission.id} className="bg-[#242e3d] rounded-xl p-4 flex justify-between items-center border border-gray-700/50">
+              <div key={mission.id} className="bg-[#242e3d] rounded-xl p-4 flex justify-between items-center border border-gray-700/50">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-black rounded-lg flex items-center justify-center font-bold text-[#0052FF]">𝕏</div>
                   <div>
