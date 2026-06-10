@@ -169,7 +169,7 @@ function BasefyApp() {
             <div className="flex justify-between items-start mb-4">
               <div>
                 <h3 className="text-lg font-bold text-white">Basefy New User NFT</h3>
-                <p className="text-xs text-gray-400">Exclusive NFT for Basefy members</p>
+                <p className="text-xs text-gray-400">Exclusive NFT for the first 1000 users</p>
               </div>
               <div className="text-right">
                 <p className="text-[#0052FF] font-bold text-sm">0.001 ETH</p>
