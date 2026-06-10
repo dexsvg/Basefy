@@ -44,6 +44,15 @@ function BasefyApp() {
     { id: 4, title: 'Join Basefy Telegram', points: 15, completed: false, link: 'https://t.me' },
   ]);
 
+  // Data Simulasi Live Minter (5 Pembeli Terakhir)
+  const [recentMints, setRecentMints] = useState([
+    { address: "0x71C...a293", quantity: 1, time: "2m ago" },
+    { address: "0x3Ac...9E11", quantity: 1, time: "5m ago" },
+    { address: "0x892...F43b", quantity: 2, time: "12m ago" },
+    { address: "0x5b1...44Cc", quantity: 1, time: "18m ago" },
+    { address: "0xDe9...8A12", quantity: 1, time: "25m ago" },
+  ]);
+
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const referrer = urlParams.get('ref');
@@ -169,7 +178,7 @@ function BasefyApp() {
             <div className="flex justify-between items-start mb-4">
               <div>
                 <h3 className="text-lg font-bold text-white">Basefy New User NFT</h3>
-                <p className="text-xs text-gray-400">Exclusive NFT for the first 1000 users</p>
+                <p className="text-xs text-gray-400">Exclusive NFT for 1000 Basefy members</p>
               </div>
               <div className="text-right">
                 <p className="text-[#0052FF] font-bold text-sm">0.001 ETH</p>
@@ -193,6 +202,11 @@ function BasefyApp() {
                 onTransactionConfirmed={() => {
                   alert("Success! NFT Minted.");
                   setPoints(prev => prev + 100);
+                  
+                  // Ketika user berhasil mint, alamat aslinya langsung masuk ke urutan paling atas Live Minter!
+                  const userAddressShort = `${account.address.substring(0, 5)}...${account.address.substring(account.address.length - 4)}`;
+                  const newMintLog = { address: userAddressShort, quantity: 1, time: "Just now" };
+                  setRecentMints(prev => [newMintLog, ...prev.slice(0, 4)]);
                 }}
                 onError={(err) => {
                   console.error("Mint error details:", err);
@@ -204,6 +218,33 @@ function BasefyApp() {
                 Mint NFT Now (0.001 ETH)
               </TransactionButton>
             )}
+
+            {/* --- LIVE MINTER COMPONENT (5 RECENT MINTS) --- */}
+            <div className="mt-5 pt-4 border-t border-gray-700/60">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">Live Recent Mints</h4>
+              </div>
+              
+              <div className="flex flex-col gap-2">
+                {recentMints.map((mint, index) => (
+                  <div key={index} className="flex justify-between items-center bg-[#1d2633] px-3 py-2 rounded-lg text-xs border border-gray-800">
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-500 font-mono">#</span>
+                      <span className="font-mono text-gray-300 font-medium">{mint.address}</span>
+                    </div>
+                    <div className="text-right flex items-center gap-3">
+                      <span className="bg-[#0052FF]/10 text-[#0052FF] px-2 py-0.5 rounded text-[10px] font-bold">
+                        {mint.quantity} NFT
+                      </span>
+                      <span className="text-gray-500 text-[11px]">{mint.time}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            {/* --- END OF LIVE MINTER --- */}
+
           </div>
         </div>
       </div>
@@ -245,7 +286,7 @@ function BasefyApp() {
         </div>
       ) : (
         <div className="w-full max-w-md">
-          {/* Misi Umum (General) - Tampil saat tab General aktif */}
+          {/* Misi Umum (General) */}
           <div className="flex flex-col gap-3">
              {generalMissions.map((m) => (
               <div key={m.id} className="bg-[#242e3d] rounded-xl p-4 flex justify-between items-center border border-gray-700/50">
@@ -264,4 +305,4 @@ function BasefyApp() {
 }
 
 export default function App() { return ( <ThirdwebProvider> <BasefyApp /> </ThirdwebProvider> ); }
-      
+                  
