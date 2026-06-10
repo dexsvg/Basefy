@@ -6,7 +6,7 @@ import nftImage from './IMG_20260608_232101.png'; // Gambar dari repositori GitH
 
 
 // 1. Locked Smart Contract Address
-const SMART_CONTRACT_ADDRESS = "0x263043098927A76cA8370363F6B815f34E716851"; 
+const SMART_CONTRACT_ADDRESS = "0x5693B08eD075012E42caCeAB11AA53b07f227e35"; 
 
 // 2. Variabel gambar mengarah ke berkas lokal
 const NFT_IMAGE_URL = nftImage;
